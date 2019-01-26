@@ -63,9 +63,11 @@ public class ConvexHull
         unSortedList.Reverse();
 
         //The vertice with the smallest angle is also on the convex hull so add it
-        sortedList.Add(unSortedList[unSortedList.Count - 1]);
+        if (unSortedList.Count > 0)
+            sortedList.Add(unSortedList[unSortedList.Count - 1]);
 
-        unSortedList.RemoveAt(unSortedList.Count - 1);
+        if (unSortedList.Count > 0)
+            unSortedList.RemoveAt(unSortedList.Count - 1);
 
 
         //

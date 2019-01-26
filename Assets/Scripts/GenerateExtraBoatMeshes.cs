@@ -219,6 +219,9 @@ public class GenerateExtraBoatMeshes
         //
         //Init by calculating the left normal, the normal, and the average left normal because we can reuse them
         //
+
+        if (finalVertices.Count < 1)
+            return;
         Vector3 TL = finalVertices[finalVertices.Count - 1];
         Vector3 TR = finalVertices[0];
 

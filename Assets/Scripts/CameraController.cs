@@ -29,6 +29,8 @@ public class CameraController : MonoBehaviour
         Vector3 destination = Ship.position + new Vector3(Radius * Mathf.Cos(angle), 5f, Radius * Mathf.Sin(angle));
         _transform.position = Vector3.Lerp(_transform.position, destination, RadiusSpeed * Time.deltaTime);
         //_transform.rotation = Quaternion.Lerp(_transform.rotation, Ship.rotation, RotationSpeed * Time.deltaTime);
-        _transform.LookAt(Ship.position);
+        Vector3 focus = Ship.position;
+        focus.y = _transform.position.y;
+        _transform.LookAt(focus);
     }
 }

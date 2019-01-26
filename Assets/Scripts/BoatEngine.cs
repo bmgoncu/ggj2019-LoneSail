@@ -19,7 +19,7 @@ public class BoatEngine : MonoBehaviour
 
     private Rigidbody boatRB;
 
-    private float WaterJetRotation_Y = 0f;
+    public float WaterJetRotation_Y = 0f;
 
     BoatController boatController;
 
@@ -43,6 +43,8 @@ public class BoatEngine : MonoBehaviour
 
     void UserInput()
     {
+
+        float deltaY = 15f * Time.deltaTime;
         //Forward / reverse
         if (Input.GetKey(KeyCode.W))
         {
@@ -59,11 +61,13 @@ public class BoatEngine : MonoBehaviour
         //Steer left
         if (Input.GetKey(KeyCode.A))
         {
-            WaterJetRotation_Y = waterJetTransform.localEulerAngles.y + 2f;
+            WaterJetRotation_Y = ((waterJetTransform.localEulerAngles.y+360f)%360f) + deltaY;
 
-            if (WaterJetRotation_Y > 30f && WaterJetRotation_Y < 270f)
+            if (WaterJetRotation_Y > 30f && WaterJetRotation_Y < 180f)
             {
                 WaterJetRotation_Y = 30f;
+            } else if (WaterJetRotation_Y > 180f && WaterJetRotation_Y < 330f) {
+                WaterJetRotation_Y = 330f;
             }
 
             Vector3 newRotation = new Vector3(0f, WaterJetRotation_Y, 0f);
@@ -73,17 +77,32 @@ public class BoatEngine : MonoBehaviour
         //Steer right
         else if (Input.GetKey(KeyCode.D))
         {
-            WaterJetRotation_Y = waterJetTransform.localEulerAngles.y - 2f;
+            WaterJetRotation_Y = ((waterJetTransform.localEulerAngles.y+360f)%360f) - deltaY;
 
-            if (WaterJetRotation_Y < 330f && WaterJetRotation_Y > 90f)
+            if (WaterJetRotation_Y < 330f && WaterJetRotation_Y > 180f)
             {
                 WaterJetRotation_Y = 330f;
+            } else if (WaterJetRotation_Y < 180f && WaterJetRotation_Y > 30) {
+                WaterJetRotation_Y = 30f;
             }
 
             Vector3 newRotation = new Vector3(0f, WaterJetRotation_Y, 0f);
 
             waterJetTransform.localEulerAngles = newRotation;
+        } else {
+            Debug.Log(waterJetTransform.localEulerAngles.y + " " + WaterJetRotation_Y +  " " + (waterJetTransform.localEulerAngles.y <= 30f) + (waterJetTransform.localEulerAngles.y > 0f));
+            if (waterJetTransform.localEulerAngles.y >= 329f)
+                WaterJetRotation_Y = ((waterJetTransform.localEulerAngles.y + 360f) % 360f) + deltaY;
+            if (waterJetTransform.localEulerAngles.y <= 31f && waterJetTransform.localEulerAngles.y > 0f)
+                WaterJetRotation_Y = ((waterJetTransform.localEulerAngles.y + 360f) % 360f) - deltaY;
+
+            if (Mathf.Abs(WaterJetRotation_Y - 360f) < 0.1f)
+                WaterJetRotation_Y = 0f;
+            Vector3 newRotation = new Vector3(0f, WaterJetRotation_Y, 0f);
+
+            waterJetTransform.localEulerAngles = newRotation;
         }
+
     }
 
     void UpdateWaterJet()
