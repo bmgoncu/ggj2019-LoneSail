@@ -5,6 +5,7 @@ public class BoatEngine : MonoBehaviour
 {
     //Drags
     public Transform waterJetTransform;
+    public Transform SailMast;
 
     //How fast should the engine accelerate?
     public float powerFactor;
@@ -20,6 +21,7 @@ public class BoatEngine : MonoBehaviour
     private Rigidbody boatRB;
 
     public float WaterJetRotation_Y = 0f;
+    public float WaterJetTurnSpeed = 15f;
 
     BoatController boatController;
 
@@ -44,7 +46,7 @@ public class BoatEngine : MonoBehaviour
     void UserInput()
     {
 
-        float deltaY = 15f * Time.deltaTime;
+        float deltaY = WaterJetTurnSpeed * Time.deltaTime;
         //Forward / reverse
         if (Input.GetKey(KeyCode.W))
         {
@@ -90,7 +92,6 @@ public class BoatEngine : MonoBehaviour
 
             waterJetTransform.localEulerAngles = newRotation;
         } else {
-            Debug.Log(waterJetTransform.localEulerAngles.y + " " + WaterJetRotation_Y +  " " + (waterJetTransform.localEulerAngles.y <= 30f) + (waterJetTransform.localEulerAngles.y > 0f));
             if (waterJetTransform.localEulerAngles.y >= 329f)
                 WaterJetRotation_Y = ((waterJetTransform.localEulerAngles.y + 360f) % 360f) + deltaY;
             if (waterJetTransform.localEulerAngles.y <= 31f && waterJetTransform.localEulerAngles.y > 0f)
@@ -102,6 +103,13 @@ public class BoatEngine : MonoBehaviour
 
             waterJetTransform.localEulerAngles = newRotation;
         }
+
+        float sailAngle = WaterJetRotation_Y;
+        if (WaterJetRotation_Y > 180f)
+        {
+            sailAngle = WaterJetRotation_Y -360;
+        }
+        SailMast.localEulerAngles = Vector3.up * sailAngle / 2;
 
     }
 
