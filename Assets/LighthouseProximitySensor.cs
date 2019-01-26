@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using DG.Tweening;
+using UnityEngine;
 
 public class LighthouseProximitySensor : MonoBehaviour
 {
@@ -19,7 +20,6 @@ public class LighthouseProximitySensor : MonoBehaviour
     {
         if (isTriggered)
         {
-            destroyLighthouse();
             return;
         }
 
@@ -31,7 +31,9 @@ public class LighthouseProximitySensor : MonoBehaviour
         if (triggerDistanceToTarget > distance)
         {
             isTriggered = true;
-            createNextLighthouse();
+            Camera.main.GetComponent<CameraController>().Activate1(transform,() => {
+                destroyLighthouse();
+            });
         }
     }
 
@@ -42,7 +44,13 @@ public class LighthouseProximitySensor : MonoBehaviour
 
     private void destroyLighthouse()
     {
-        Vector3 pos = transform.position;
-        transform.position = new Vector3(pos.x, pos.y - Time.deltaTime, pos.z);
+        transform.DOMove(transform.position - Vector3.up * 40f, 2f).SetEase(Ease.OutSine).OnComplete(() => {
+            if (nextLighthouse != null) {
+                createNextLighthouse();
+                Camera.main.GetComponent<CameraController>().Activate2(nextLighthouse.transform, () => {
+                    Camera.main.GetComponent<CameraController>().Release();
+                });
+            }
+        });
     }
 }

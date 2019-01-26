@@ -13,6 +13,8 @@ public class BoatEngine : MonoBehaviour
     //What's the boat's maximum engine power?
     public float maxPower;
 
+    private float _tempMaxPower;
+
     //The boat's current engine power is public for debugging
     public float currentJetPower;
 
@@ -27,8 +29,8 @@ public class BoatEngine : MonoBehaviour
 
     void Start() 
     {
+        _tempMaxPower = maxPower;
         boatRB = GetComponent<Rigidbody>();
-
         boatController = GetComponent<BoatController>();
     }
 
@@ -63,6 +65,9 @@ public class BoatEngine : MonoBehaviour
         //Steer left
         if (Input.GetKey(KeyCode.A))
         {
+            maxPower = _tempMaxPower / 3;
+            if (currentJetPower > maxPower)
+                currentJetPower = maxPower;
             WaterJetRotation_Y = ((waterJetTransform.localEulerAngles.y+360f)%360f) + deltaY;
 
             if (WaterJetRotation_Y > 30f && WaterJetRotation_Y < 180f)
@@ -79,6 +84,9 @@ public class BoatEngine : MonoBehaviour
         //Steer right
         else if (Input.GetKey(KeyCode.D))
         {
+            maxPower = _tempMaxPower / 3;
+            if (currentJetPower > maxPower)
+                currentJetPower = maxPower;
             WaterJetRotation_Y = ((waterJetTransform.localEulerAngles.y+360f)%360f) - deltaY;
 
             if (WaterJetRotation_Y < 330f && WaterJetRotation_Y > 180f)
@@ -93,9 +101,17 @@ public class BoatEngine : MonoBehaviour
             waterJetTransform.localEulerAngles = newRotation;
         } else {
             if (waterJetTransform.localEulerAngles.y >= 329f)
+            {
                 WaterJetRotation_Y = ((waterJetTransform.localEulerAngles.y + 360f) % 360f) + deltaY;
-            if (waterJetTransform.localEulerAngles.y <= 31f && waterJetTransform.localEulerAngles.y > 0f)
+                maxPower = _tempMaxPower / 3;
+            }
+            else if (waterJetTransform.localEulerAngles.y <= 31f && waterJetTransform.localEulerAngles.y > 0f)
+            {
                 WaterJetRotation_Y = ((waterJetTransform.localEulerAngles.y + 360f) % 360f) - deltaY;
+                maxPower = _tempMaxPower / 3;
+            }
+            else
+                maxPower = _tempMaxPower;
 
             if (Mathf.Abs(WaterJetRotation_Y - 360f) < 0.1f)
                 WaterJetRotation_Y = 0f;
