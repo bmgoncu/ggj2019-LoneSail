@@ -33,26 +33,52 @@ public class BoatPhysics : MonoBehaviour
         boatRB = this.GetComponent<Rigidbody>();
     }
 
+    //For water reflection
+    public GameObject underWaterMirrorObj;
+    //The foam
+    public GameObject foamSkirtObj;
+
+    //A list with all vertices that are at the intersection point between the air and water
+    private List<Vector3> intersectionVertices = new List<Vector3>();
+
+    //Script that displays extra meshes, generate a mirrored mesh and a foam skirt
+    private GenerateExtraBoatMeshes generateExtraMeshes;
+
+    Mesh underWaterMirrorMesh;
+    Mesh foamMesh;
+
     void Start()
     {
         //Init the script that will modify the boat mesh
         modifyBoatMesh = new ModifyBoatMesh(boatMeshObj, underWaterObj, aboveWaterObj, boatRB);
 
+        generateExtraMeshes = new GenerateExtraBoatMeshes(boatMeshObj);
+
         //Meshes that are below and above the water
         underWaterMesh = underWaterObj.GetComponent<MeshFilter>().mesh;
         aboveWaterMesh = aboveWaterObj.GetComponent<MeshFilter>().mesh;
+
+        underWaterMirrorMesh = underWaterMirrorObj.GetComponent<MeshFilter>().mesh;
+        foamMesh = foamSkirtObj.GetComponent<MeshFilter>().mesh;
     }
 
+    //And the update method now looks like this
     void Update()
     {
         //Generate the under water and above water meshes
-        modifyBoatMesh.GenerateUnderwaterMesh();
+        modifyBoatMesh.GenerateUnderwaterMesh(intersectionVertices);
 
         //Display the under water mesh - is always needed to get the underwater length for forces calculations
-        modifyBoatMesh.DisplayMesh(underWaterMesh, "UnderWater Mesh", modifyBoatMesh.underWaterTriangleData);
+        generateExtraMeshes.DisplayMesh(underWaterMesh, "UnderWater Mesh", modifyBoatMesh.underWaterTriangleData);
 
         //Display the above water mesh
-        //modifyBoatMesh.DisplayMesh(aboveWaterMesh, "AboveWater Mesh", modifyBoatMesh.aboveWaterTriangleData);
+        generateExtraMeshes.DisplayMesh(aboveWaterMesh, "AboveWater Mesh", modifyBoatMesh.aboveWaterTriangleData);
+
+        //Display the mesh that's the mirror
+        generateExtraMeshes.DisplayMirrorMesh(underWaterMirrorMesh, "UnderwaterWater Mirror Mesh", modifyBoatMesh.aboveWaterTriangleData);
+
+        //Generate the foam skirt
+        generateExtraMeshes.GenerateFoamSkirt(foamMesh, "Foam skirt", intersectionVertices);
     }
 
     void FixedUpdate()
