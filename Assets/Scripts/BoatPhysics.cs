@@ -89,7 +89,7 @@ public class BoatPhysics : MonoBehaviour
 
         //Need this data for slamming forces
         float boatArea = modifyBoatMesh.boatArea;
-        float boatMass = 800; //Replace this line with your boat's total mass
+        float boatMass = boatMeshObj.GetComponent<Rigidbody>().mass; //Replace this line with your boat's total mass
 
         //To connect the submerged triangles with the original triangles
         List<int> indexOfOriginalTriangle = modifyBoatMesh.indexOfOriginalTriangle;
@@ -162,7 +162,7 @@ public class BoatPhysics : MonoBehaviour
 
             //Force 1 - Air resistance 
             //Replace VisbyData.C_r with your boat's drag coefficient
-            forceToAdd += BoatPhysicsMath.AirResistanceForce(rhoAir, triangleData, 0.5f);
+            forceToAdd += BoatPhysicsMath.AirResistanceForce(rhoAir, triangleData, boatMeshObj.GetComponent<Rigidbody>().drag);
 
             //Add the forces to the boat
             boatRB.AddForceAtPosition(forceToAdd, triangleData.center);
