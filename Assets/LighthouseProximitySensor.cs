@@ -1,5 +1,6 @@
 ﻿using DG.Tweening;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class LighthouseProximitySensor : MonoBehaviour
 {
@@ -9,10 +10,17 @@ public class LighthouseProximitySensor : MonoBehaviour
     public bool isTriggered = false;
 
     public GameObject nextLighthouse;
+
+    public string Title;
+    public string Desc;
+
+    public Text UITitle;
+    public Text UIDesc;
     
     // Start is called before the first frame update
     void Start()
     {
+
     }
 
     // Update is called once per frame
@@ -44,13 +52,24 @@ public class LighthouseProximitySensor : MonoBehaviour
 
     private void destroyLighthouse()
     {
-        transform.DOMove(transform.position - Vector3.up * 40f, 2f).SetEase(Ease.OutSine).OnComplete(() => {
-            if (nextLighthouse != null) {
+        UIDesc.text = Desc;
+        UITitle.text = Title;
+        Sequence seq = DOTween.Sequence();
+        seq.Append(UITitle.DOFade(1f, 1f));
+        seq.Append(UIDesc.DOFade(1f, 1f));
+        seq.Append(transform.DOMove(transform.position - Vector3.up * 40f, 2f).SetEase(Ease.OutSine));
+        seq.Append(UITitle.DOFade(0f, 1f));
+        seq.Append(UIDesc.DOFade(0f, 1f));
+        seq.OnComplete(() => {
+            if (nextLighthouse != null)
+            {
                 createNextLighthouse();
                 Camera.main.GetComponent<CameraController>().Activate2(nextLighthouse.transform, () => {
                     Camera.main.GetComponent<CameraController>().Release();
                 });
             }
         });
+
+
     }
 }

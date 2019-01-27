@@ -16,6 +16,8 @@ public class CameraController : MonoBehaviour
     public float RadiusSpeed;
     public Vector3 CameraModeOffset;
     public float CameraModeTransitionDuration = 2;
+    public RectTransform TopLetterBox;
+    public RectTransform BottomLetterBox;
     public bool CameraModeOn = false;
 
     private Vector3 _offset = new Vector3(0f, 5f, 10f);
@@ -46,6 +48,9 @@ public class CameraController : MonoBehaviour
     {
         CameraModeOn = true;
         Sequence destroySequence = DOTween.Sequence();
+        destroySequence.Insert(0, TopLetterBox.DOAnchorPosY(0, CameraModeTransitionDuration).SetEase(Ease.Linear));
+        destroySequence.Insert(0, BottomLetterBox.DOAnchorPosY(0, CameraModeTransitionDuration).SetEase(Ease.Linear));
+        destroySequence.Insert(0, transform.DOMove(destroying.position + CameraModeOffset, CameraModeTransitionDuration).SetEase(Ease.Linear));
         destroySequence.Insert(0, transform.DOMove(destroying.position + CameraModeOffset, CameraModeTransitionDuration).SetEase(Ease.Linear));
         destroySequence.Insert(0, transform.DORotate(Vector3.zero, CameraModeTransitionDuration));
         destroySequence.AppendCallback(() => onDestroyingFinnished());
@@ -61,10 +66,15 @@ public class CameraController : MonoBehaviour
         Sequence destroySequence = DOTween.Sequence();
         destroySequence.Append(transform.DOLookAt(newOne.position, CameraModeTransitionDuration, AxisConstraint.Y));
         destroySequence.Append(transform.DOMove(destination, CameraModeTransitionDuration));
+        destroySequence.Append(transform.DOLookAt(Ship.position, 1f));
         destroySequence.AppendCallback(() => onNewOneFinnished());
     }
 
     public void Release() {
+
+        Sequence seq = DOTween.Sequence();
+        seq.Insert(0, TopLetterBox.DOAnchorPosY(50, CameraModeTransitionDuration).SetEase(Ease.Linear));
+        seq.Insert(0, BottomLetterBox.DOAnchorPosY(-50, CameraModeTransitionDuration).SetEase(Ease.Linear));
         CameraModeOn = false;
     }
 }
