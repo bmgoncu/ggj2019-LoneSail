@@ -15,7 +15,8 @@ public class RotateLight : MonoBehaviour
 
     private void Start()
     {
-        Pivot = new Vector3(-this.transform.TransformPoint(Vector3.zero).x + PivotObject.transform.TransformPoint(Vector3.zero).x, 0, 0);
+        if (PivotObject != null)
+            Pivot = new Vector3(-this.transform.TransformPoint(Vector3.zero).x + PivotObject.transform.TransformPoint(Vector3.zero).x, 0, 0);
     }
 
     void FixedUpdate()

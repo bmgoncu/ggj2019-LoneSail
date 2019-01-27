@@ -19,6 +19,8 @@ public class CameraController : MonoBehaviour
     public RectTransform TopLetterBox;
     public RectTransform BottomLetterBox;
     public bool CameraModeOn = false;
+    bool _cheat = false;
+    public GameObject lastOne;
 
     private Vector3 _offset = new Vector3(0f, 5f, 10f);
 
@@ -41,6 +43,13 @@ public class CameraController : MonoBehaviour
             Vector3 focus = Ship.position;
             focus.y = _transform.position.y;
             _transform.LookAt(focus);
+        }
+        if (Input.GetKeyDown(KeyCode.B) && _cheat == false) {
+            _cheat = true;
+            foreach (GameObject go in GameObject.FindGameObjectsWithTag("Respawn"))
+                go.gameObject.SetActive(false);
+            lastOne.SetActive(true);
+            Ship.position = new Vector3(0f, 0f, 400f);
         }
     }
 

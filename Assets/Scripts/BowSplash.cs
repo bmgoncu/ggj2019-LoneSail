@@ -26,7 +26,6 @@ public class BowSplash : MonoBehaviour
         float topDistToWater = WaterController.current.DistanceToWater(splashTop.position, Time.time);
 
         //Only add foam if one is above water and the other is below
-        Debug.Log(topDistToWater + " " + bottomDistToWater);
         if (topDistToWater > 0f && bottomDistToWater < 0f)
         {
             //Cut in the same way as in http://www.gamasutra.com/view/news/237528/Water_interaction_model_for_boats_in_video_games.php
