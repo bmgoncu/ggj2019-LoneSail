@@ -49,7 +49,7 @@ public class CameraController : MonoBehaviour
             foreach (GameObject go in GameObject.FindGameObjectsWithTag("Respawn"))
                 go.gameObject.SetActive(false);
             lastOne.SetActive(true);
-            Ship.position = new Vector3(0f, 0f, 400f);
+            Ship.position = new Vector3(-551f, 0f, -70f);
         }
     }
 
