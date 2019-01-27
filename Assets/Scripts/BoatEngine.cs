@@ -25,10 +25,13 @@ public class BoatEngine : MonoBehaviour
     public float WaterJetRotation_Y = 0f;
     public float WaterJetTurnSpeed = 15f;
 
+    AudioSource _source;
+
     BoatController boatController;
 
     void Start() 
     {
+        _source = GetComponent<AudioSource>();
         _tempMaxPower = maxPower;
         boatRB = GetComponent<Rigidbody>();
         boatController = GetComponent<BoatController>();
@@ -123,8 +126,9 @@ public class BoatEngine : MonoBehaviour
         float sailAngle = WaterJetRotation_Y;
         if (WaterJetRotation_Y > 180f)
         {
-            sailAngle = WaterJetRotation_Y -360;
+            sailAngle = WaterJetRotation_Y - 360;
         }
+        _source.volume = Mathf.Abs(sailAngle) / 30f;
         SailMast.localEulerAngles = Vector3.up * sailAngle / 2;
 
     }
